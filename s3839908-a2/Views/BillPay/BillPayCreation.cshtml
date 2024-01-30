@@ -1,0 +1,70 @@
+﻿@model s3839908_a2.ViewModels.BillPayCreationViewModel
+@{ var billpay = Model.BillPay; }
+
+
+<h1>Create BillPay</h1>
+
+<form id="myForm" asp-action="CreateBillPay">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="form-group">
+    <label style="color: black">Select Account</label>
+    <select asp-for="SelectedAccountId" class="form-control" id="accountDropdown">
+        <option value="@Model.Accounts[0].AccountNumber">@Model.Accounts[0].AccountNumber
+            ($@String.Format("{0:0.00}", @Model.Accounts[0].Balance))</option>
+        <option value="@Model.Accounts[1].AccountNumber">@Model.Accounts[1].AccountNumber
+            ($@String.Format("{0:0.00}", @Model.Accounts[1].Balance))</option>
+    </select>
+    <span asp-validation-for="SelectedAccountId" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label style="color: black">Select Payee</label>
+    <select asp-for="BillPay.PayeeID" class="form-control" id="payeeDropdown">
+        @foreach(var payee in Model.Payees)
+        {
+            <option value="@payee.PayeeID">@payee.Name</option>
+        }
+    </select>
+    <span asp-validation-for="BillPay.PayeeID" class="text-danger"></span>
+</div>
+    <div class="form-group">
+        <label style="color: black">Amount</label>
+        <input type="text" asp-for="BillPay.Amount" id="Amount" class="form-control"/>
+        <span asp-validation-for="BillPay.Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="myDate">Select Date:</label>
+        <input type="datetime-local" asp-for="BillPay.ScheduleTimeLocal" value="@Model.BillPay.ScheduleTimeLocal"
+            id="myDate" class="form-control" required/>
+        <span asp-validation-for="BillPay.ScheduleTimeLocal" class="text-danger"></span>
+    </div>
+
+<div class="form-group">
+    <label style="color: black">Period Type</label>
+    <select asp-for="BillPay.Period" class="form-control" id="Period">
+        <option value="@((int)PeriodType.OneOff)">One-Off</option>
+        <option value="@((int)PeriodType.Monthly)">Monthly</option>
+    </select>
+    <span asp-validation-for="BillPay.Period" class="text-danger"></span>
+</div>
+
+
+    <button type="submit" onclick="submitForm()" class="btn btn-outline-primary">
+        Add BillPay
+    </button>
+</form>
+<div>
+    <br />
+    <a asp-action="Index">Back to BillPays</a>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var currentDate = new Date().toISOString().slice(0, 16);
+            document.getElementById("myDate").min = currentDate;
+        });
+    </script>
+}
+
+

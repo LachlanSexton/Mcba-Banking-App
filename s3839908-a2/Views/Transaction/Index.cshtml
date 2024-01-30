@@ -1,0 +1,93 @@
+﻿@model DepositOrWithdrawViewModel
+@{
+    var transactionType = Model.TransactionType;
+}
+
+<h1 class="display-4">@transactionType</h1>
+<form asp-action="@transactionType">
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select account
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" value="@Model.Accounts[0].AccountNumber">@Model.Accounts[0].AccountNumber ($@String.Format("{0:0.00}",@Model.Accounts[0].Balance))</a>
+                        <a class="dropdown-item" value="@Model.Accounts[1].AccountNumber">@Model.Accounts[1].AccountNumber ($@String.Format("{0:0.00}", @Model.Accounts[1].Balance))</a>
+                    </div>
+                </div>
+                <input type="hidden" id="SelectedAccountId" name="SelectedAccountId" />
+                @Html.ValidationMessage(nameof(Model.SelectedAccountId), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="Amount" class="control-label">Amount</label>
+                <input id="Amount" name="Amount" class="form-control" />
+                @Html.ValidationMessage(nameof(Model.Amount), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="Comment" class="control-label">Comment</label>
+                <input id="Comment" name="Comment" class="form-control" />
+                @Html.ValidationMessage(nameof(Model.Comment), new { @class = "text-danger" })
+            </div>
+
+            @if (transactionType == s3839908_a2.Enums.TransactionType.Transfer)
+            {
+                <div class="form-group">
+                    <label for="DestinationAccountId" class="control-label">Destintation Account Number</label>
+                    <input id="DestinationAccountId" name="DestinationAccountId" class="form-control"/>
+                    @Html.ValidationMessage("DestinationAccountId", new { @class = "text-danger" })
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" id ="submitButton" value="@transactionType" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to Accounts</a>
+</div>
+@await Html.PartialAsync("_ConfirmationModal")
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.dropdown-item').on('click', function (e) {
+                e.preventDefault();
+                var selectedAccountId = $(this).attr('value');
+                $('#SelectedAccountId').val(selectedAccountId);
+                $('#dropdownMenuButton').text($(this).text());  // Update the button text
+            });
+
+            // Add a click event listener for the submit button
+            $('#submitButton').on('click', function (e) {
+                e.preventDefault();
+                showConfirmationDialog();
+            });
+
+            // Function to show the confirmation dialog
+            function showConfirmationDialog() {
+                $('#confirmationModal').modal('show');
+                console.log("modal show");
+            }
+
+            // Function to handle the confirmation and submit the form
+            function confirmAndSubmit() {
+                $('#confirmationModal').modal('hide');
+                $('form').submit();
+            }
+            
+            function cancel(){
+                $('#confirmationModal').modal('hide');
+            }
+
+            // Set the confirm button in the modal to call the confirmAndSubmit function
+            $('#confirmButton').on('click', confirmAndSubmit);
+            // Set cancel button to hide modal
+            $('#cancelButton').on('click', cancel);
+
+        });
+    </script>
+}

@@ -1,0 +1,113 @@
+﻿@model s3839908_a2.ViewModels.BillPayViewModel
+@{
+    var billPays = Model.BillPays;
+}
+
+<head>
+    <style>
+        #headerContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<div id="headerContainer">
+    <h1>My BillPays</h1>
+
+    <a asp-controller="BillPay" asp-action="BillPayCreation" class="btn btn-success">Create Bill Pay</a>
+</div>
+<form asp-action="BillPays">
+
+    <div class="form-group">
+        <label style="color: black">Select Account</label>
+        <select asp-for="SelectedAccountId" class="form-control" id="accountDropdown">
+            <option value="@Model.Accounts[0].AccountNumber">
+                @Model.Accounts[0].AccountNumber
+                ($@String.Format("{0:0.00}", @Model.Accounts[0].Balance))
+            </option>
+            <option value="@Model.Accounts[1].AccountNumber">
+                @Model.Accounts[1].AccountNumber
+                ($@String.Format("{0:0.00}", @Model.Accounts[1].Balance))
+            </option>
+        </select>
+        <span asp-validation-for="SelectedAccountId" class="text-danger"></span>
+    </div>
+    <input type="hidden" id="SelectedAccountId" name="selectedAccountId" />
+    <br />
+    <button type="submit" class="btn btn-primary">Show BillPays</button>
+
+</form>
+
+
+@if (billPays != null)
+{
+
+    <table class="table">
+    <tr>
+        <th>@Html.DisplayNameFor(x => billPays[0].BillPayId)</th>
+        <th>@Html.DisplayNameFor(x => billPays[0].AccountNumber)</th>
+        <th>@Html.DisplayNameFor(x => billPays[0].PayeeID)</th>
+        <th>@Html.DisplayNameFor(x => billPays[0].Amount)</th>
+        <th>@Html.DisplayNameFor(x => billPays[0].ScheduleTimeLocal)</th>
+        <th>@Html.DisplayNameFor(x => billPays[0].Period)</th>
+        <th>Delete</th>
+    </tr>
+    @foreach (var billPay in billPays)
+    {
+        <tr>
+            <td>@Html.DisplayFor(x => billPay.BillPayId)</td>
+            <td>@Html.DisplayFor(x => billPay.AccountNumber)</td>
+            <td>@Html.DisplayFor(x => billPay.PayeeID)</td>
+            <td>$@Html.DisplayFor(x => billPay.Amount)</td>
+            <td>@Html.DisplayFor(x => billPay.ScheduleTimeLocal)</td>
+            <td>@Html.DisplayFor(x => billPay.Period)</td>
+            <td>
+                <form asp-action="DeleteBillPay" method="post">
+                    <input type="hidden" name="billPayId" value="@billPay.BillPayId" />
+                    <button type="submit" class="btn btn-danger deleteButton">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+
+}
+@await Html.PartialAsync("_ConfirmationModal")
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Add a click event listener for each delete button
+            $('.deleteButton').on('click', function (e) {
+                e.preventDefault();
+                showConfirmationDialog($(this));  // Pass the clicked button to the function
+            });
+
+            // Function to show the confirmation dialog
+            function showConfirmationDialog(button) {
+                // Store the clicked button in a data attribute
+                $('#confirmationModal').data('clickedButton', button);
+
+                $('#confirmationModal').modal('show');
+            }
+
+            // Function to handle the confirmation and submit the form
+            function confirmAndSubmit() {
+                var clickedButton = $('#confirmationModal').data('clickedButton');
+                $('#confirmationModal').modal('hide');
+                clickedButton.closest('form').submit();
+            }
+
+            function cancel(){
+                $('#confirmationModal').modal('hide');
+            }
+
+            // Set the confirm button in the modal to call the confirmAndSubmit function
+            $('#confirmButton').on('click', confirmAndSubmit);
+            $('#cancelButton').on('click', cancel);
+        });
+    </script>
+}
+

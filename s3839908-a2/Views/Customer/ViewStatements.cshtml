@@ -1,0 +1,92 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+@model IPagedList<Transaction>
+@{
+    var customer = (Customer)ViewBag.Customer;
+    var accounts = customer.Accounts;
+    var selectedAccountId = ViewBag.SelectedAccountId as int?;
+    var selectedAccount = accounts.Where(x => x.AccountNumber == selectedAccountId).FirstOrDefault();
+    var balance = @String.Format("{0:0.00}", selectedAccount.Balance);    
+}
+
+<div>
+    <form asp-action="ViewStatements">
+
+    <div class="form-group">
+        <h1>Select an account :</h1>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @selectedAccount.AccountNumber ($@balance)
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                @foreach (var account in accounts)
+                {
+                        <a class="dropdown-item" value="@account.AccountNumber">@account.AccountNumber ($@String.Format("{0:0.00}", account.Balance))</a>
+                }
+            </div>
+        </div>
+        <input type="hidden" id="SelectedAccountId" name="selectedAccountId" />
+        <br />
+        <button type="submit" class="btn btn-primary">Show Transactions</button>
+    </div>
+
+        <hr class="my-4 bg-gradient">
+
+    </form>
+    <h1>Statement for Account Number: @selectedAccountId</h1>
+    <br />
+    <h2>Current Balance: $@balance</h2>
+
+
+</div>
+
+
+<table class="table">
+    <tr>
+        <th>@Html.DisplayNameFor(x => x[0].TransactionID)</th>
+        <th>@Html.DisplayNameFor(x => x[0].TransactionType)</th>
+        <th>@Html.DisplayNameFor(x => x[0].AccountNumber)</th>
+        <th>@Html.DisplayNameFor(x => x[0].DestinationAccountNumber)</th>
+        <th>@Html.DisplayNameFor(x => x[0].Amount)</th>
+        <th>@Html.DisplayNameFor(x => x[0].TransactionTimeLocal)</th>
+        <th>@Html.DisplayNameFor(x => x[0].Comment)</th>
+    </tr>
+    @foreach (var transaction in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
+            <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
+            <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
+            <td>@Html.DisplayFor(x => transaction.DestinationAccountNumber)</td>
+            <td>$@Html.DisplayFor(x => transaction.Amount)</td>
+            <td>@Html.DisplayFor(x => transaction.TransactionTimeLocal)</td>
+            <td>@Html.DisplayFor(x => transaction.Comment)</td>
+        </tr>
+    }
+</table>
+
+@Html.PagedListPager(Model, page => Url.Action("ViewStatements", new { page, selectedAccountId }),
+                                new PagedListRenderOptions
+                            {
+                                LiElementClasses = new[] { "page-item" },
+                                PageClasses = new[] { "page-link" }
+                            })
+
+<div>
+    <a asp-action="Index">Back to Accounts</a>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('.dropdown-item').on('click', function (e) {
+                e.preventDefault();
+                var selectedAccountId = $(this).attr('value');
+                $('#SelectedAccountId').val(selectedAccountId);
+                $('#dropdownMenuButton').text($(this).text());  // Update the button text
+            });
+
+        });
+    </script>
+}

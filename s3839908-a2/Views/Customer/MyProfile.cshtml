@@ -1,0 +1,108 @@
+﻿@model CustomerViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile</title>
+    <style>
+        #headerContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #toggleButton {
+            margin-right: 10px;
+        }
+    </style>
+    <script>
+        function toggleReadOnly() {
+            var inputs = document.querySelectorAll('input[type="text"]');
+            var readOnlyState = inputs[0].readOnly;
+            inputs.forEach(function (input) {
+                input.readOnly = !input.readOnly;
+                input.style.backgroundColor = readOnlyState ? '#ffffff' : '#f0f0f0';
+            });
+            var saveButton = document.getElementById('saveButton');
+            var cancelButton = document.getElementById('cancelButton');
+
+            saveButton.style.display = readOnlyState ? 'block' : 'none';
+            cancelButton.style.display = readOnlyState ? 'block' : 'none';
+        }
+
+        function cancelChanges() {
+            toggleReadOnly();
+        }
+    </script>
+</head>
+<body>
+    <div id="headerContainer">
+        <h1>My Profile</h1>
+        <button id="toggleButton" type="button" onclick="toggleReadOnly()" class="btn btn-outline-dark">Edit Profile</button>
+    </div>
+
+    <form id="profileForm" asp-action="SaveProfile" method="post">
+        <div class="form-group">
+            <label style=" color: black">Name</label>
+            <input type="text" asp-for="@Model.Name" readonly="readonly" value="@Model.Name" name="Name" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.Name), new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label style=" color: black">TFN</label>
+            <input type="text" asp-for="@Model.TFN" readonly="readonly" value="@Model.TFN" name="TFN" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.TFN), new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label style=" color: black">Address</label>
+            <input type="text" asp-for="@Model.Address" readonly="readonly" value="@Model.Address" name="Address" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.Address), new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label style=" color: black">City</label>
+            <input type="text" asp-for="@Model.City" readonly="readonly" value="@Model.City" name="City" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.City), new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label style=" color: black">State</label>
+            <input type="text" asp-for="@Model.State" readonly="readonly" value="@Model.State" name="State" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.State), new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label style=" color: black">Post Code</label>
+            <input type="text" asp-for="@Model.PostCode" readonly="readonly" value="@Model.PostCode" name="PostCode" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.PostCode), new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label style=" color: black">Mobile</label>
+            <input type="text" asp-for="@Model.Mobile" readonly="readonly" value="@Model.Mobile" name="Mobile" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage(nameof(Model.Mobile), new { @class = "text-danger" })
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button id="saveButton" type="submit" style="display:none" class="btn btn-outline-success">Save</button>
+            <button id="cancelButton" type="button" onclick="cancelChanges()" style="display:none" class="btn btn-outline-danger">Cancel</button>
+        </div>
+    </form>
+
+    <form id="passwordForm" asp-action="ChangePassword" class="password-form" method="post">
+        <h2>Change Password</h2>
+        <div class="form-group">
+            <label for="CurrentPassword">Current Password:</label>
+            <input type="password" id="CurrentPassword" name="CurrentPassword" class="form-control" required />
+            @Html.ValidationMessage("CurrentPassword", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label for="NewPassword">New Password:</label>
+            <input type="password" id="NewPassword" name="NewPassword" class="form-control" required />
+            @Html.ValidationMessage("NewPassword", new { @class = "text-danger" })
+
+        </div>
+        <div class="form-group">
+            <label for="ConfirmPassword">Confirm Password:</label>
+            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+            @Html.ValidationMessage("ConfirmPassword", new { @class = "text-danger" })
+        </div>
+        <button type="submit" class="btn btn-outline-primary">Change Password</button>
+    </form>
+</body>
+</html>

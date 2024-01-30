@@ -1,0 +1,79 @@
+﻿@model Customer
+@{
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit User</title>
+    <style>
+        form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Edit User</h1>
+
+    <form id="customerId" asp-action="FindCustomer" method="post">
+        <div class="form-group">
+            <label style=" color: black">Customer ID</label>
+            <input type="text" name="id" class="form-control" style="background-color: #f0f0f0;" />
+            @Html.ValidationMessage("id", new { @class = "text-danger" })
+        </div>
+        <button id="searchButton" type="submit" class="btn btn-outline-primary">Search</button>
+    </form>
+
+    @if (Model != null)
+    {
+        <form id="profileForm" asp-action="UpdateCustomer" method="post">
+            <input type="hidden" asp-for="@Model.CustomerID" value="@Model.CustomerID" name="CustomerID" class="form-control" style="background-color: #f0f0f0;" />
+            <div class="form-group">
+                <label style=" color: black">Name</label>
+                <input type="text" asp-for="@Model.Name" value="@Model.Name" name="Name" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.Name), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label style=" color: black">TFN</label>
+                <input type="text" asp-for="@Model.TFN" value="@Model.TFN" name="TFN" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.TFN), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label style=" color: black">Address</label>
+                <input type="text" asp-for="@Model.Address" value="@Model.Address" name="Address" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.Address), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label style=" color: black">City</label>
+                <input type="text" asp-for="@Model.City" value="@Model.City" name="City" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.City), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label style=" color: black">State</label>
+                <input type="text" asp-for="@Model.State" value="@Model.State" name="State" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.State), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label style=" color: black">Post Code</label>
+                <input type="text" asp-for="@Model.PostCode" value="@Model.PostCode" name="PostCode" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.PostCode), new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label style=" color: black">Mobile</label>
+                <input type="text" asp-for="@Model.Mobile" value="@Model.Mobile" name="Mobile" class="form-control" style="background-color: #f0f0f0;" />
+                @Html.ValidationMessage(nameof(Model.Mobile), new { @class = "text-danger" })
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button id="saveButton" type="submit" style="display:none" class="btn btn-outline-success">Save</button>
+                <button id="cancelButton" type="button" style="display:none" class="btn btn-outline-danger">Cancel</button>
+            </div>
+            <button id="saveButton" type="submit" class="btn btn-outline-primary">Save</button>
+        </form>
+
+    }
+</body>
+</html>
